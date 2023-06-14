@@ -1,0 +1,26 @@
+import { useEffect, useState } from 'react';
+import * as React from 'react';
+
+async function bioApi() {
+  return await fetch(new URL('https://randomuser.me/api/'));
+}
+
+export default function UserBio() {
+  const [bioData, setBioData] = useState();
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    bioApi()
+      .then((res) => {
+        if (!response.ok) {
+          setError(true);
+        }
+        return res.json();
+      })
+      .then((d) => {
+        console.log(d.results[0]);
+      });
+  }, []);
+
+  return <div></div>;
+}

@@ -1,0 +1,63 @@
+import { useEffect, useState, useMemo } from 'react';
+import * as React from 'react';
+
+async function bioApi() {
+  return await fetch(new URL('https://randomuser.me/api/'));
+}
+
+export default function UserBio() {
+  const [bioData, setBioData] = useState([]);
+  const [refresh, setRefresh] = useState(false);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    if (!refresh) {
+      bioApi()
+        .then((res) => res.json())
+        .then((d) => setBioData(d.results))
+        .then((d) => setRefresh(true));
+    }
+  }, [refresh]);
+
+  if (!error && bioData.length > 0)
+    return (
+      <div className="bio-container">
+        <div class="person">
+          <img src={bioData[0].picture.large} style={{ float: 'left' }} />
+          <div class="name" style={{ backgroundColor: 'grey', padding: '4px' }}>
+            {bioData[0].name.title}{' '}
+            <b>
+              {bioData[0].name.first} {bioData[0].name.last}
+            </b>
+          </div>
+          <div
+            class="location"
+            style={{
+              backgroundColor: 'grey',
+              marginTop: '5px',
+              padding: '4px',
+            }}
+          >
+            <b>Location</b> <br />
+            {bioData[0].location.state}, {bioData[0].location.country}
+            <br />
+            <b>Address</b> <br />
+            {bioData[0].location.street.name},{' '}
+            {bioData[0].location.street.number}
+            <br />
+            {bioData[0].location.postcode}, {bioData[0].location.city}
+            <br />
+          </div>
+        </div>
+        <button
+          onClick={() => setRefresh(false)}
+          style={{ width: '100%', height: '50px' }}
+        >
+          Swipe left
+        </button>
+      </div>
+    );
+  else {
+    return <div>Failed to load data.</div>;
+  }
+}
