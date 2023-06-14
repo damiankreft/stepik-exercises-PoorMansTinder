@@ -1,9 +1,33 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState } from 'react';
 import * as React from 'react';
+import Button from 'react-bootstrap/Button';
+import Badge from 'react-bootstrap/Badge';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 async function bioApi() {
   return await fetch(new URL('https://randomuser.me/api/'));
 }
+
+const styles = {
+  image: {
+    float: 'left',
+    marginTop: '5px',
+  },
+  divLocation: {
+    backgroundColor: 'grey',
+    marginTop: '5px',
+    padding: '4px',
+  },
+  swipeButton: {
+    width: '100%',
+    height: '50px',
+    borderRadius: '0',
+  },
+  divName: {
+    backgroundColor: 'grey',
+    padding: '4px',
+  },
+};
 
 export default function UserBio() {
   const [bioData, setBioData] = useState([]);
@@ -23,41 +47,40 @@ export default function UserBio() {
     return (
       <div className="bio-container">
         <div class="person">
-          <img src={bioData[0].picture.large} style={{ float: 'left' }} />
-          <div class="name" style={{ backgroundColor: 'grey', padding: '4px' }}>
-            {bioData[0].name.title}{' '}
-            <b>
-              {bioData[0].name.first} {bioData[0].name.last}
-            </b>
+          <div class="name" style={styles.divName}>
+            <i>
+              {bioData[0].name.title}{' '}
+              <b>
+                {' '}
+                {bioData[0].name.first} {bioData[0].name.last}{' '}
+              </b>
+            </i>
           </div>
-          <div
-            class="location"
-            style={{
-              backgroundColor: 'grey',
-              marginTop: '5px',
-              padding: '4px',
-            }}
-          >
+          <img src={bioData[0].picture.large} style={styles.image} />
+
+          <div class="location" style={styles.divLocation}>
             <b>Location</b> <br />
-            {bioData[0].location.state}, {bioData[0].location.country}
-            <br />
+            {bioData[0].location.state}, {bioData[0].location.country} <br />
             <b>Address</b> <br />
             {bioData[0].location.street.name},{' '}
-            {bioData[0].location.street.number}
-            <br />
-            {bioData[0].location.postcode}, {bioData[0].location.city}
-            <br />
+            {bioData[0].location.street.number} <br />
+            {bioData[0].location.postcode}, {bioData[0].location.city} <br />
           </div>
         </div>
-        <button
-          onClick={() => setRefresh(false)}
-          style={{ width: '100%', height: '50px' }}
-        >
+
+        <Button onClick={() => setRefresh(false)} style={styles.swipeButton}>
           Swipe left
-        </button>
+        </Button>
       </div>
     );
   else {
-    return <div>Failed to load data.</div>;
+    if (error) {
+      return (
+        <div>
+          {' '}
+          <Badge bg="danger">Danger</Badge> Failed to load data.{' '}
+        </div>
+      );
+    }
   }
 }
